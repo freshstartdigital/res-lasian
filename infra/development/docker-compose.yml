@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  api:
+    build: ../../api
+    env_file:
+      - ../../.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - db
+    networks:
+      - backnet
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    networks:
+      - backnet
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backnet
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - backnet
+
+volumes:
+  postgres_data:
+
+networks:
+  backnet:
+    driver: bridge
