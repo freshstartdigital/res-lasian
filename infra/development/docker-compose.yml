@@ -45,8 +45,37 @@ services:
     networks:
       - backnet
 
+  rabbitmq:
+    image: 'rabbitmq:management'
+    container_name: res_rabbitmq_container
+    ports:
+      - '15672:15672' # management UI
+      - '5672:5672' # default RabbitMQ listener port
+    environment:
+      RABBITMQ_DEFAULT_USER: 'admin'
+      RABBITMQ_DEFAULT_PASS: 'adminpassword'
+      RABBITMQ_DEFAULT_VHOST: '/'
+    volumes:
+      - 'rabbitmq_data:/var/lib/rabbitmq'
+    restart: always
+
+  pdfgenerator:
+    build:
+      context: ../../pdf
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./pdf:/app/pdf
+    depends_on:
+      - rabbitmq
+
+
 volumes:
   postgres_data:
+  rabbitmq_data:
+  pdf: # This volume is used to persist generated PDFs on the host
+
 
 networks:
   backnet:

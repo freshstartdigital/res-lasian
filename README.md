@@ -29,10 +29,9 @@ sudo apt install git
 Clone your project's repository using Git:
 
 ```
-git clone [URL_of_the_Repository]
-cd [Repository_Name]
+git clone https://github.com/freshstartdigital/res-lasian.git
+cd res-lasian
 ```
-Replace [URL_of_the_Repository] with the URL of your Git repository and [Repository_Name] with the name of the cloned directory.
 
 ### Step 3: Run the Docker Initialisation Script
 This script will setup docker and docker-compose on the server.

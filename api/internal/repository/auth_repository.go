@@ -10,7 +10,6 @@ import (
 	"example.com/internal/models"
 )
 
-
 func CreateVerificationToken(db *sql.DB, verificationToken models.VerificationToken) (models.VerificationToken, error) {
 	const sql = `
 	INSERT INTO verification_token (identifier, expires, token) 
@@ -69,25 +68,24 @@ func GetUser(db *sql.DB, id int) (*models.User, error) {
 }
 
 func GetUserByEmail(db *sql.DB, email string) (*models.User, error) {
-    const sqlQuery = `
+	const sqlQuery = `
     SELECT * FROM users WHERE email = $1
     `
-    row := db.QueryRow(sqlQuery, email)
+	row := db.QueryRow(sqlQuery, email)
 
-    var user models.User
-    err := row.Scan(&user.ID, &user.Name, &user.Email, &user.EmailVerified, &user.Image)
+	var user models.User
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.EmailVerified, &user.Image)
 
-    if err != nil {
-        if err == sql.ErrNoRows {
-            // No user was found, return nil user and no error
-            return nil, nil
-        }
-        log.Println(err)
-        return nil, err // An error occurred during the query execution
-    }
-    return &user, nil
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// No user was found, return nil user and no error
+			return nil, nil
+		}
+		log.Println(err)
+		return nil, err // An error occurred during the query execution
+	}
+	return &user, nil
 }
-
 
 func GetUserByAccount(db *sql.DB, providerAccountId, provider string) (*models.User, error) {
 	const sql = `
@@ -106,47 +104,47 @@ func GetUserByAccount(db *sql.DB, providerAccountId, provider string) (*models.U
 }
 
 func UpdateUser(db *sql.DB, user models.User) (models.User, error) {
-    var setParts []string
-    var args []interface{}
+	var setParts []string
+	var args []interface{}
 
-    argIndex := 1
-    if user.Name != "" {
-        setParts = append(setParts, fmt.Sprintf("name = $%d", argIndex))
-        args = append(args, user.Name)
-        argIndex++
-    }
-    if user.Email != "" {
-        setParts = append(setParts, fmt.Sprintf("email = $%d", argIndex))
-        args = append(args, user.Email)
-        argIndex++
-    }
-    if !user.EmailVerified.IsZero() {
-        setParts = append(setParts, fmt.Sprintf(`"emailVerified" = $%d`, argIndex))
-        args = append(args, user.EmailVerified)
-        argIndex++
-    }
-    if user.Image != "" {
-        setParts = append(setParts, fmt.Sprintf("image = $%d", argIndex))
-        args = append(args, user.Image)
-        argIndex++
-    }
+	argIndex := 1
+	if user.Name != "" {
+		setParts = append(setParts, fmt.Sprintf("name = $%d", argIndex))
+		args = append(args, user.Name)
+		argIndex++
+	}
+	if user.Email != "" {
+		setParts = append(setParts, fmt.Sprintf("email = $%d", argIndex))
+		args = append(args, user.Email)
+		argIndex++
+	}
+	if !user.EmailVerified.IsZero() {
+		setParts = append(setParts, fmt.Sprintf(`"emailVerified" = $%d`, argIndex))
+		args = append(args, user.EmailVerified)
+		argIndex++
+	}
+	if user.Image != "" {
+		setParts = append(setParts, fmt.Sprintf("image = $%d", argIndex))
+		args = append(args, user.Image)
+		argIndex++
+	}
 
-    if len(setParts) == 0 {
-        return user, nil // or return an error if you prefer
-    }
+	if len(setParts) == 0 {
+		return user, nil // or return an error if you prefer
+	}
 
-    args = append(args, user.ID)
-    setClause := strings.Join(setParts, ", ")
-    query := fmt.Sprintf(`UPDATE users SET %s WHERE id = $%d RETURNING id, name, email, "emailVerified", image`, setClause, argIndex)
+	args = append(args, user.ID)
+	setClause := strings.Join(setParts, ", ")
+	query := fmt.Sprintf(`UPDATE users SET %s WHERE id = $%d RETURNING id, name, email, "emailVerified", image`, setClause, argIndex)
 
-    row := db.QueryRow(query, args...)
-    var updatedUser models.User
-    err := row.Scan(&updatedUser.ID, &updatedUser.Name, &updatedUser.Email, &updatedUser.EmailVerified, &updatedUser.Image)
-    if err != nil {
-        return models.User{}, err
-    }
+	row := db.QueryRow(query, args...)
+	var updatedUser models.User
+	err := row.Scan(&updatedUser.ID, &updatedUser.Name, &updatedUser.Email, &updatedUser.EmailVerified, &updatedUser.Image)
+	if err != nil {
+		return models.User{}, err
+	}
 
-    return updatedUser, nil
+	return updatedUser, nil
 }
 
 func LinkAccount(db *sql.DB, account models.Account) (models.Account, error) {
@@ -203,7 +201,6 @@ func CreateSession(db *sql.DB, session models.Session) (models.Session, error) {
 	return session, nil
 }
 
-
 func GetSessionAndUser(db *sql.DB, sessionToken string) (models.Session, models.User, error) {
 	const session_sql = `select * from sessions where "sessionToken" = $1`
 	const user_sql = `select * from users where id = $1`
@@ -227,9 +224,8 @@ func GetSessionAndUser(db *sql.DB, sessionToken string) (models.Session, models.
 	return session, user, nil
 }
 
-
 func UpdateSession(db *sql.DB, session models.Session) (models.Session, error) {
-	const fetchSQL =  `select * from sessions where id = $1`
+	const fetchSQL = `select * from sessions where id = $1`
 	const updateSQL = `
 	UPDATE sessions set
 	expires = $2

@@ -1,3 +1,9 @@
+import { Organisation, SoftwareProduct, User } from "./coreSchemaTypes";
+
 export type HomePageLayoutProps = {
-    text: string
-}
+    organisation: Organisation;
+    softwareProduct: SoftwareProduct;
+    accessGranted: boolean;
+    user: User;
+
+} | null

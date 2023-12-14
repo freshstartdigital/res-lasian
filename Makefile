@@ -1,5 +1,5 @@
 development:
-	docker compose -f infra/development/docker-compose.yml up -d && cd app && npm run dev
+	docker compose -f infra/development/docker-compose.yml up -d && cd swms_generator && npm run dev
 
 development-down:
 	docker compose -f infra/development/docker-compose.yml down

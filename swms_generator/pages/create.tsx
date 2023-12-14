@@ -2,15 +2,15 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import HomePageLayout from '@/layout/HomePageLayout'
 import { GetServerSideProps, NextPage } from 'next'
 import { HomePageLayoutProps } from '@/types/Layout'
 import { Ssr } from '@/lib/Ssr'
 import Unauthenticated from '@/layout/Unauthenticated'
+import CreateLayout from '@/layout/CreateLayout'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const Home: NextPage<HomePageLayoutProps> = (props) => {
+const Create: NextPage<HomePageLayoutProps> = (props) => {
   return (
     <>
       <Head>
@@ -19,12 +19,12 @@ const Home: NextPage<HomePageLayoutProps> = (props) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {props.user ? <HomePageLayout {...props} /> : <Unauthenticated />}
+      {props.user ? <CreateLayout/> : <Unauthenticated />}
     </>
   )
 }
 
-export default Home
+export default Create
 
 
 export const getServerSideProps: GetServerSideProps<HomePageLayoutProps> = async (ctx) => {
