@@ -5,7 +5,7 @@ import { HomePageLayoutProps } from '@/types/Layout';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
 
-const CreateLayout: FC<HomePageLayoutProps> = ({ organisation }) => {
+const CreateLayout: FC<HomePageLayoutProps> = (props) => {
   const [component, setComponent] = useState('SelectOption' as string);
   const theme = useTheme();
   const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -37,7 +37,7 @@ const CreateLayout: FC<HomePageLayoutProps> = ({ organisation }) => {
             alignItems: 'center'
           }}>
           {component == 'SelectOption' && <SelectOption SelectHandler={SelectHandler} />}
-          {component == 'ProjectForm' && <ProjectForm />}
+          {component == 'ProjectForm' && <ProjectForm {...props} />}
         </Box>
       </Box>
     </div>
