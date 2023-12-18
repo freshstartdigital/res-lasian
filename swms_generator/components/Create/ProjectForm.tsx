@@ -1,28 +1,69 @@
 import { Box, Button, Typography } from '@mui/material';
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC, Fragment, SyntheticEvent, useState } from 'react';
 import InputText from '../Input/InputText';
 import InputDate from '../Input/InputDate';
 import { HomePageLayoutProps } from '@/types/Layout';
-
-const FORM_DATA = [
-  { label: 'Site Name', type: 'text', step: 0, field: 'siteName' },
-  { label: 'Date Developed', type: 'date', step: 0, field: 'dateDeveloped' },
-  { label: 'Approval Date', type: 'date', step: 0, field: 'approvalDate' },
-  { label: 'Date Last Reviewed', type: 'date', step: 0, field: 'dateLastReviewed' },
-  { label: 'Next Review Date', type: 'date', step: 0, field: 'nextReviewDate' }
-];
+import InputTable from '../Input/InputTable';
+import { FORM_DATA, FORM_CONFIG, SWMS_TABLE_DATA } from '@/config/Form';
 
 const ProjectForm: FC<HomePageLayoutProps> = (props) => {
   const [step, setStep] = useState(0);
   const [input, setInput] = useState<any>({});
-  console.log(props);
-
+  const [tableData, setTableData] = useState<any>(SWMS_TABLE_DATA);
+  console.log('tableData', tableData);
   const changeHandler = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [field]: e.target.value });
   };
 
+  const checkHandler =
+    (id: number, subId: number) => (e: SyntheticEvent<Element, Event>, checked: boolean) => {
+      if (checked) {
+        setTableData((prev: any) => {
+          const idIndex = prev.findIndex((e: any) => e.id == id);
+          const subIdIndex = prev[idIndex].values.findIndex((e: any) => e.subId == subId);
+          prev[idIndex].values[subIdIndex].checked = checked;
+
+          return prev;
+        });
+      }
+      if (!checked) {
+        setTableData((prev: any) => {
+          const idIndex = prev.findIndex((e: any) => e.id == id);
+          const subIdIndex = prev[idIndex].values.findIndex((e: any) => e.subId == subId);
+          prev[idIndex].values[subIdIndex].checked = checked;
+
+          return prev;
+        });
+      }
+    };
+
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (step === 0) {
+      setStep(step + 1);
+      return;
+    }
+
+    const filteredTableData = [];
+
+    for (let data in tableData) {
+      const subTableValue = [];
+
+      for (const subData in tableData[data].values) {
+        if (tableData[data].values[subData].checked) {
+          subTableValue.push({
+            ...tableData[data].values[subData],
+            index: `${parseInt(data) + 1}.${parseInt(subData) + 1}`
+          });
+        }
+      }
+
+      if (subTableValue.length > 0) {
+        tableData[data].values = subTableValue;
+        filteredTableData.push({ ...tableData[data], index: parseInt(data) + 1 });
+      }
+    }
 
     // setStep(step + 1);
     const res = await fetch('/api/pdf', {
@@ -45,20 +86,7 @@ const ProjectForm: FC<HomePageLayoutProps> = (props) => {
         name: 'this is a test',
         email: props.user?.email,
         nextReviewDate: input.nextReviewDate,
-        tableData: [
-          {
-            number: '1',
-            task: 'Unload vehicle',
-            potentialHazards: 'Musculoskeletal strains',
-            riskBefore: '3',
-            controlMeasures: 'Planning, Consultation, Adherence to Manual Handling Techniques',
-            controlMeasuresList: [
-              'When unloading the vehicle we will ensure that we are as close as possible to the area where the equipment will be set up. If required we will seek out assistance in unloading heavy items, however our normal work does not include heavy items.',
-              'We will use sensible manual handling techniques making sure our backs are straight and bending with the knees.'
-            ],
-            riskAfter: '5'
-          }
-        ]
+        tableData: filteredTableData
       })
     });
     const data = await res.json();
@@ -67,28 +95,41 @@ const ProjectForm: FC<HomePageLayoutProps> = (props) => {
   return (
     <Box component="form" onSubmit={submitHandler} sx={{ width: '600px' }}>
       <Typography variant="h6">Project Information</Typography>
-      {FORM_DATA.filter((e) => e.step == step).map(({ label, type, field }) => {
-        return (
-          <Fragment key={label}>
-            {type === 'text' && (
-              <InputText
-                value={input[field]}
-                changeHandler={changeHandler}
-                field={field}
-                label={label}
-              />
-            )}
-            {type === 'date' && (
-              <InputDate
-                value={input[field]}
-                label={label}
-                field={field}
-                changeHandler={changeHandler}
-              />
-            )}
-          </Fragment>
-        );
-      })}
+      {step == 0 &&
+        FORM_DATA.map((e) => {
+          return (
+            <Fragment key={e.label}>
+              {e.type == 'text' && (
+                <InputText
+                  value={input[e.field]}
+                  changeHandler={changeHandler}
+                  field={e.field}
+                  label={e.label}
+                />
+              )}
+              {e.type == 'date' && (
+                <InputDate
+                  value={input[e.field]}
+                  label={e.label}
+                  field={e.field}
+                  changeHandler={changeHandler}
+                />
+              )}
+            </Fragment>
+          );
+        })}
+      {step > 0 &&
+        SWMS_TABLE_DATA.map((Element) => {
+          return (
+            <InputTable
+              tableData={tableData}
+              key={Element.id}
+              data={Element}
+              checkHandler={checkHandler}
+            />
+          );
+        })}
+
       <Box
         sx={{
           display: 'flex',

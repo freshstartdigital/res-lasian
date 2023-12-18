@@ -21,7 +21,8 @@
       table look */ page-break-inside: avoid; /* Prevent table rows from being split across pages */
       } th, td { border: 1px solid black; padding: 5px; } /* Ensure headers and footers appear on
       each page */ @media print { .header, .footer { position: fixed; left: 0; right: 0; } .header {
-      top: 0; } .footer { bottom: 0; } }
+      top: 0; } .footer { bottom: 0; } } .font-bold { font-weight: bold; font-size: 12px; }
+      .font-regular { font-weight: normal; font-size: 12px; } td { vertical-align: top; }
 
     </style>
   </head>
@@ -199,21 +200,39 @@
           <tbody>
             {{#each tableData}}
               <tr>
-                <td>{{this.number}}</td>
-                <td>{{this.task}}</td>
-                <td>{{this.potentialHazards}}</td>
-                <td>{{this.riskBefore}}</td>
-                <td>
-                  &bull;
-                  {{this.controlMeasures}}
-                  {{#each this.controlMeasuresList}}
-                    <p style='margin-left: 20px;'>&#9702; {{this}}</p>
-                  {{/each}}
-                </td>
-                <td>{{this.riskAfter}}</td>
-                <td>Ryan</td>
-                <!-- Add as many columns as needed -->
+                <td colspan='7'><p class='font-bold'>{{this.index}} {{this.name}}</p></td>
               </tr>
+              {{#each values}}
+                <tr>
+                  <td class='font-bold'>{{this.index}}</td>
+                  <td>
+                    {{#each this.task}}
+                      <p class='font-regular'>&bull; {{this}}</p>
+                    {{/each}}
+                  </td>
+                  <td>
+                    {{#each this.potentialHazards}}
+                      <p class='font-regular'>&bull; {{this}}</p>
+                    {{/each}}
+                  </td>
+                  <td><p class='font-regular'>{{this.riskBefore}}</p></td>
+                  <td>
+                    {{#each this.controlMeasures}}
+                      <p class='font-regular'>
+
+                        &bull;
+                        {{this.name}}
+                      </p>
+                      {{#each this.values}}
+                        <p class='font-regular' style='margin-left: 20px;'>&#9702; {{this}}</p>
+                      {{/each}}
+                    {{/each}}
+                  </td>
+                  <td class='font-regular'>{{this.riskAfter}}</td>
+                  <td class='font-regular'>Ryan</td>
+                  <!-- Add as many columns as needed -->
+                </tr>
+              {{/each}}
             {{/each}}
           </tbody>
         </table>
