@@ -28,10 +28,12 @@ const InputTable: FC<InputTableProps> = ({ checkHandler, data, tableData }) => {
                   onChange={checkHandler(data.id, e.subId)}
                   control={
                     <Checkbox
-                    //   checked={
-                    //     Array.isArray(tableData) &&
-                    //     tableData.find((g) => g.id == data.id)?.find((f) => f.subId == e.sub)
-                    //   }
+                      checked={
+                        Array.isArray(tableData) &&
+                        tableData
+                          .find((g) => g.id == data.id)
+                          ?.values.find((f: any) => f.subId == e.sub)
+                      }
                     />
                   }
                   label={Array.isArray(e.task) ? e.task.join(' / ') : e.task}
