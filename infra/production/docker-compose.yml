@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  app:
+    build: ../../app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - frontnet
+  api:
+    build: ../../api
+    env_file:
+      - ../../.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - backnet
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: your_db_name
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backnet
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - backnet
+
+  rabbitmq:
+    image: 'rabbitmq:management'
+    container_name: res_rabbitmq_container
+    ports:
+      - '15672:15672' # management UI
+      - '5672:5672' # default RabbitMQ listener port
+    environment:
+      RABBITMQ_DEFAULT_USER: 'admin'
+      RABBITMQ_DEFAULT_PASS: 'adminpassword'
+      RABBITMQ_DEFAULT_VHOST: '/'
+    volumes:
+      - 'rabbitmq_data:/var/lib/rabbitmq'
+    restart: always
+
+  pdfgenerator:
+    platform: linux/arm64/v8
+    build:
+      context: ../../pdf
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./pdf:/app/pdf
+    depends_on:
+      - rabbitmq
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - frontnet
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  pdf: # This volume is used to persist generated PDFs on the host
+
+
+networks:
+  frontnet:
+    driver: bridge
+  backnet:
+    driver: bridge
