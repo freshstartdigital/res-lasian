@@ -1,28 +1,10 @@
 import NavigationBar from '@/components/NavigationBar';
+import SwmsTable from '@/components/Swms/SwmsTable';
 import { HomePageLayoutProps } from '@/types/Layout';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useSession, signIn, signOut } from 'next-auth/react';
 import { FC } from 'react';
 
-// export default function Component() {
-//   const { data: session } = useSession()
-//   if (session) {
-//     return (
-//       <>
-//         Signed in as {session?.user?.email} <br />
-//         <button onClick={() => signOut()}>Sign out</button>
-//       </>
-//     )
-//   }
-//   return (
-//     <>
-//       Not signed in <br />
-//       <button onClick={() => signIn()}>Sign in</button>
-//     </>
-//   )
-// }
-
-const HomePageLayout: FC<HomePageLayoutProps> = ({ organisation }) => {
+const HomePageLayout: FC<HomePageLayoutProps> = ({ organisation, swms }) => {
   const theme = useTheme();
   const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   return (
@@ -50,6 +32,7 @@ const HomePageLayout: FC<HomePageLayoutProps> = ({ organisation }) => {
             }}>
             <Typography variant="h4">{organisation?.name}</Typography>
           </Box>
+          <SwmsTable swms={swms} />
         </Box>
       </Box>
     </div>

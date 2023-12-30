@@ -118,6 +118,31 @@
     PRIMARY KEY (organisation_id, software_product_id)
   );
 
+CREATE TABLE swms
+(
+  id SERIAL,
+  organisation_id INTEGER REFERENCES organisations(id),
+  name VARCHAR(255) NOT NULL,
+  swms_type VARCHAR(255) NOT NULL,
+  file_name VARCHAR(255),
+  file_path VARCHAR(255),
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  account_email VARCHAR(255),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE swms_data
+(
+  id SERIAL,
+  swms_id INTEGER REFERENCES swms(id),
+  data JSONB,
+  version INTEGER NOT NULL,
+  PRIMARY KEY (id),
+  
+);
+
+
   -- Sample Insertions
   INSERT INTO organisations (id, name, address, contact_email) VALUES (1, 'Fresh Start Projects', '123 Fake Street, Sydney, NSW, 2000', 'ryan.slater@droneanalytics.com.au');
   INSERT INTO users (name, email, "emailVerified", image) VALUES ('Ryan Slater', 'ryan.slater@droneanalytics.com.au', NOW(), 'https://gravatar.com/avatar/abc123');

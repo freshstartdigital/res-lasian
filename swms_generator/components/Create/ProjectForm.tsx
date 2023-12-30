@@ -2,18 +2,22 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { FC, Fragment, SyntheticEvent, useState } from 'react';
 import InputText from '../Input/InputText';
 import InputDate from '../Input/InputDate';
-import { HomePageLayoutProps } from '@/types/Layout';
+import { CreateLayoutProps } from '@/types/Layout';
 import InputTable from '../Input/InputTable';
-import { FORM_DATA, FORM_CONFIG, SWMS_TABLE_DATA } from '@/config/Form';
+import { FORM_DATA, FORM_CONFIG } from '@/config/Form';
+import { useRouter } from 'next/router';
 
-const ProjectForm: FC<HomePageLayoutProps> = (props) => {
+const ProjectForm: FC<CreateLayoutProps> = (props) => {
   const [step, setStep] = useState(0);
   const [input, setInput] = useState<any>({});
-  const [tableData, setTableData] = useState<any>(SWMS_TABLE_DATA);
-  console.log('tableData', tableData);
+  const [tableData, setTableData] = useState<any>(Array.isArray(props.schema) ? props.schema : []);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const router = useRouter();
   const changeHandler = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput({ ...input, [field]: e.target.value });
   };
+
+  console.log(props);
 
   const checkHandler =
     (id: number, subId: number) => (e: SyntheticEvent<Element, Event>, checked: boolean) => {
@@ -65,36 +69,50 @@ const ProjectForm: FC<HomePageLayoutProps> = (props) => {
       }
     }
 
+    console.log(filteredTableData);
+
     // setStep(step + 1);
+    setIsLoaded(true);
     const res = await fetch('/api/pdf', {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        companyName: props.organisation?.name,
-        businessName: props.organisation?.name,
-        businessAddress: props.organisation?.address,
-        abn: '98 765 432 109',
-        businessPhone: '+61 2 1234 5678',
-        scopeOfWork: 'New residential building construction',
-        projectAddress: input.siteName,
-        developedBy: 'John Doe',
-        dateDeveloped: input.dateDeveloped,
-        approvedBy: 'Jane Smith',
-        approvalDate: input.approvalDate,
-        name: 'this is a test',
-        email: props.user?.email,
-        nextReviewDate: input.nextReviewDate,
-        tableData: filteredTableData
+        organisationID: props.organisation?.id,
+        account_email: props.user?.email,
+        name: input.siteName,
+        swms_type: 'Construction',
+        swms_data: {
+          companyName: props.organisation?.name,
+          businessName: props.organisation?.name,
+          businessAddress: props.organisation?.address,
+          abn: '98 765 432 109',
+          businessPhone: '+61 2 1234 5678',
+          scopeOfWork: 'New residential building construction',
+          projectAddress: input.siteName,
+          developedBy: 'John Doe',
+          dateDeveloped: input.dateDeveloped,
+          approvedBy: 'Jane Smith',
+          approvalDate: input.approvalDate,
+          name: 'this is a test',
+          email: props.user?.email,
+          nextReviewDate: input.nextReviewDate,
+          tableData: filteredTableData
+        }
       })
     });
+
     const data = await res.json();
-    console.log(data);
+    setIsLoaded(false);
+    router.push(`/`);
   };
   return (
-    <Box component="form" onSubmit={submitHandler} sx={{ width: '600px' }}>
-      <Typography variant="h6">Project Information</Typography>
+    <Box
+      component="form"
+      onSubmit={submitHandler}
+      sx={{ width: '600px', marginTop: '5vh', height: '100%' }}>
+      <Typography variant="h5">Project Information</Typography>
       {step == 0 &&
         FORM_DATA.map((e) => {
           return (
@@ -119,7 +137,8 @@ const ProjectForm: FC<HomePageLayoutProps> = (props) => {
           );
         })}
       {step > 0 &&
-        SWMS_TABLE_DATA.map((Element) => {
+        Array.isArray(props.schema) &&
+        props.schema.map((Element) => {
           return (
             <InputTable
               tableData={tableData}
@@ -134,13 +153,14 @@ const ProjectForm: FC<HomePageLayoutProps> = (props) => {
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
-          alignItems: 'center',
-          gap: 2
+          alignItems: 'flex-start',
+          gap: 2,
+          height: '150px'
         }}>
         <Button sx={{ width: 150 }} variant="outlined">
           Cancel
         </Button>
-        <Button type="submit" sx={{ width: 150 }} variant="contained">
+        <Button disabled={isLoaded} type="submit" sx={{ width: 150 }} variant="contained">
           Next
         </Button>
       </Box>

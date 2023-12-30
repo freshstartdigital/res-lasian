@@ -1,5 +1,6 @@
 import { NextApiHandler } from 'next';
 import amqp from 'amqplib';
+import { Config } from '@/lib/config';
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method === 'POST') {
@@ -7,16 +8,40 @@ const handler: NextApiHandler = async (req, res) => {
 
     console.log(body);
 
-    const queue = 'pdf';
-    const msg = JSON.stringify({ data: body, pdf: 'swms' });
+    const path = new Config().apiUrl;
 
-    const connection = await amqp.connect('amqp://admin:adminpassword@localhost');
-    const channel = await connection.createChannel();
-    await channel.assertQueue(queue);
-    await channel.sendToQueue(queue, Buffer.from(msg));
-    await channel.close();
-    await connection.close();
-    res.status(200).json({ message: 'Success' });
+    const response = await fetch(`${path}/swms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      const data = await response.text();
+      console.log('Go api error', data);
+      res.status(500).json({ message: 'Error' });
+      return;
+    }
+
+    const queue = 'pdf';
+
+    try {
+      const msg = JSON.stringify({ data: body.swms_data, pdf: 'swms' });
+
+      const connection = await amqp.connect('amqp://admin:adminpassword@localhost');
+      const channel = await connection.createChannel();
+      await channel.assertQueue(queue);
+      await channel.sendToQueue(queue, Buffer.from(msg));
+      await channel.close();
+      await connection.close();
+
+      res.status(200).json({ message: 'Success' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Error' });
+    }
   }
 };
 

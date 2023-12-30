@@ -12,7 +12,7 @@ const main = async () => {
     'pdf',
     async (message) => {
       const content = JSON.parse(message.content.toString());
-
+      console.log('content', content);
       const { pdf, data } = content;
 
       const browser = await puppeteer.launch({
@@ -46,4 +46,6 @@ const main = async () => {
   );
 };
 
-main();
+main().catch((error) => {
+  console.error('error initialising', error);
+});

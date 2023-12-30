@@ -8,21 +8,21 @@
       Landscape width */ min-height: 210mm; /* Landscape height */ margin: 10mm auto; border: 1px
       #D3D3D3 solid; border-radius: 5px; background: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       page-break-after: always; /* Ensures each .page starts on a new printed page */ } @page {
-      size: A4 landscape; margin: 0; } @media print { .page { margin: 0; border: initial;
+      size: A4 landscape; margin: 0; } @media print { .page { padding: 10px 20px; border: initial;
       border-radius: initial; width: initial; min-height: initial; box-shadow: initial; background:
       initial; } } .container { display: flex; align-items: center; justify-content: center; width:
       100%; gap: 10px; padding: 0; margin: 0; height: 20px;} .sub-container { flex: 1; display:
       flex; align-items: center; } .container-label { width: 200px; font-size: 12px; }
       .container-content { flex: 1; border: 1px solid black; font-size: 12px; padding: 5px; }
-      .content { padding: 10px 20px; } .content h3 { margin-bottom: 5px; margin-top: 5px; font-size:
-      16px; } .container-description {font-size: 12px; padding: 5px; } /* Existing styles... */
-      .table-page { page-break-after: always; /* Ensure that the entire page breaks after each
-      '.table-page' */ } table { width: 100%; border-collapse: collapse; /* Optional, for a cleaner
-      table look */ page-break-inside: avoid; /* Prevent table rows from being split across pages */
-      } th, td { border: 1px solid black; padding: 5px; } /* Ensure headers and footers appear on
-      each page */ @media print { .header, .footer { position: fixed; left: 0; right: 0; } .header {
-      top: 0; } .footer { bottom: 0; } } .font-bold { font-weight: bold; font-size: 12px; }
-      .font-regular { font-weight: normal; font-size: 12px; } td { vertical-align: top; }
+      .content h3 { margin-bottom: 5px; margin-top: 5px; font-size: 16px; } .container-description
+      {font-size: 12px; padding: 5px; } /* Existing styles... */ .table-page { page-break-after:
+      always; /* Ensure that the entire page breaks after each '.table-page' */ } table { width:
+      100%; border-collapse: collapse; /* Optional, for a cleaner table look */ page-break-inside:
+      avoid; /* Prevent table rows from being split across pages */ } th, td { border: 1px solid
+      black; padding: 5px; } /* Ensure headers and footers appear on each page */ @media print {
+      .header, .footer { position: fixed; left: 0; right: 0; } .header { top: 0; } .footer { bottom:
+      0; } } .font-bold { font-weight: bold; font-size: 12px; } .font-regular { font-weight: normal;
+      font-size: 12px; } td { vertical-align: top; }
 
     </style>
   </head>

@@ -10,7 +10,9 @@ const SelectOption: FC<SelectOptionProps> = ({ SelectHandler }) => {
   return (
     <Paper
       sx={{
-        p: 10
+        p: 10,
+        height: '400px',
+        margin: 'auto'
       }}>
       <Typography sx={{ mb: 2 }} textAlign="center" variant="h4">
         Create a SWMS

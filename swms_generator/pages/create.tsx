@@ -3,14 +3,14 @@ import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
 import { GetServerSideProps, NextPage } from 'next';
-import { HomePageLayoutProps } from '@/types/Layout';
+import { CreateLayoutProps } from '@/types/Layout';
 import { Ssr } from '@/lib/Ssr';
 import Unauthenticated from '@/layout/Unauthenticated';
 import CreateLayout from '@/layout/CreateLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const Create: NextPage<HomePageLayoutProps> = (props) => {
+const Create: NextPage<CreateLayoutProps> = (props) => {
   return (
     <>
       <Head>
@@ -26,6 +26,6 @@ const Create: NextPage<HomePageLayoutProps> = (props) => {
 
 export default Create;
 
-export const getServerSideProps: GetServerSideProps<HomePageLayoutProps> = async (ctx) => {
-  return await new Ssr(ctx).getHomePageLayoutProps();
+export const getServerSideProps: GetServerSideProps<CreateLayoutProps> = async (ctx) => {
+  return await new Ssr(ctx).getCreateProps();
 };

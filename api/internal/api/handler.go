@@ -46,5 +46,10 @@ func NewRouter() *mux.Router {
 	//Access handler
 	router.HandleFunc(("/access/{email}/{softwareId}"), apiHandler.UserAccessHandler).Methods("GET")
 
+	//SWMS handlers
+	router.HandleFunc(("/swms/schema"), apiHandler.SWMSSchemaHandler).Methods("GET")
+	router.HandleFunc(("/swms"), apiHandler.CreateSWMSHandler).Methods("POST")
+	router.HandleFunc(("/swms/organisation/{organisationID}"), apiHandler.GetAllSWMSByOrgHandler).Methods("GET")
+
 	return router
 }
