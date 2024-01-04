@@ -2,6 +2,8 @@ import amqp from 'amqplib';
 import puppeteer from 'puppeteer';
 import handlebars from 'handlebars';
 import fs from 'fs';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import fetch from 'node-fetch';
 
 const main = async () => {
   const connection = await amqp.connect('amqp://admin:adminpassword@res_rabbitmq_container');
@@ -13,7 +15,7 @@ const main = async () => {
     async (message) => {
       const content = JSON.parse(message.content.toString());
       console.log('content', content);
-      const { pdf, data } = content;
+      const { pdf, data, id } = content;
 
       const browser = await puppeteer.launch({
         executablePath: '/usr/bin/chromium', // Specify the path to Chromium
@@ -25,9 +27,10 @@ const main = async () => {
         const template = handlebars.compile(contentTemplate);
         const html = template(data);
         await page.setContent(html);
+        const urlSafeName = data.name.replace(/ /g, '_');
 
         await page.pdf({
-          path: `./pdf/${data.name}.pdf`,
+          path: `./pdf/${urlSafeName}.pdf`,
           format: 'A4',
           printBackground: true,
           scale: 1.0,
@@ -35,6 +38,34 @@ const main = async () => {
           timeout: 90000,
           landscape: true
         });
+
+        const s3Client = new S3Client({ region: 'ap-southeast-2' });
+        const fileContent = fs.readFileSync(`./pdf/${urlSafeName}.pdf`);
+        const uploadParams = {
+          Bucket: 'reslasian',
+          Key: `${urlSafeName}.pdf`,
+          Body: fileContent
+        };
+        const uploadCommand = new PutObjectCommand(uploadParams);
+        const uploadResponse = await s3Client.send(uploadCommand);
+
+        await fetch('http://api:8080/swms/file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: id,
+            file_name: `${urlSafeName}.pdf`,
+            file_path: ``
+          })
+        });
+
+        // await axios.post('http://api:8080/swms/file', {
+        //   id: id,
+        //   file_name: `${data.name}.pdf`,
+        //   file_path: `https://fsd-bucket.s3-ap-southeast-2.amazonaws.com/${data.name}.pdf`
+        // });
       } catch (error) {
         console.log('hitting error', error);
       } finally {

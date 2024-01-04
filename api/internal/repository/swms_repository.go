@@ -80,3 +80,18 @@ func GetAllByOrg(db *sql.DB, organisation_id string) ([]models.Swms, error) {
 	return swms, nil
 
 }
+
+func UpdateFile(db *sql.DB, id int, file_name string, file_path string) error {
+	const sql = `
+	UPDATE swms
+	SET file_name = $1, file_path = $2
+	WHERE id = $3;
+	`
+
+	_, err := db.Exec(sql, file_name, file_path, id)
+	if err != nil {
+		log.Println("update file error", err)
+		return err
+	}
+	return nil
+}

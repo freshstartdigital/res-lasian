@@ -30,9 +30,11 @@ const HomePageLayout: FC<HomePageLayoutProps> = ({ organisation, swms }) => {
             sx={{
               p: 10
             }}>
-            <Typography variant="h4">{organisation?.name}</Typography>
+            <Typography sx={{ mb: 2 }} variant="h4">
+              {organisation?.name}
+            </Typography>
+            <SwmsTable swms={swms} />
           </Box>
-          <SwmsTable swms={swms} />
         </Box>
       </Box>
     </div>

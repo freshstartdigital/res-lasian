@@ -50,6 +50,7 @@ func NewRouter() *mux.Router {
 	router.HandleFunc(("/swms/schema"), apiHandler.SWMSSchemaHandler).Methods("GET")
 	router.HandleFunc(("/swms"), apiHandler.CreateSWMSHandler).Methods("POST")
 	router.HandleFunc(("/swms/organisation/{organisationID}"), apiHandler.GetAllSWMSByOrgHandler).Methods("GET")
+	router.HandleFunc(("/swms/file"), apiHandler.UpdateFileHandler).Methods("POST")
 
 	return router
 }

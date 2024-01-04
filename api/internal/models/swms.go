@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database/sql"
 	"encoding/json"
 	"time"
 )
@@ -27,16 +26,16 @@ type ControlMeasure struct {
 }
 
 type Swms struct {
-	ID             int            `json:"id"`
-	OrganisationID int            `json:"organisation_id"`
-	Name           string         `json:"name"`
-	SwmsType       string         `json:"swms_type"`
-	FileName       sql.NullString `json:"file_name,omitempty"`
-	FilePath       sql.NullString `json:"file_path,omitempty"`
-	CreatedAt      time.Time      `json:"created_at"`
-	UpdatedAt      time.Time      `json:"updated_at"`
-	AccountEmail   string         `json:"account_email"`
-	SwmsData       []SwmsData     `json:"swms_data"`
+	ID             int        `json:"id"`
+	OrganisationID int        `json:"organisation_id"`
+	Name           string     `json:"name"`
+	SwmsType       string     `json:"swms_type"`
+	FileName       *string    `json:"file_name,omitempty"`
+	FilePath       *string    `json:"file_path,omitempty"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
+	AccountEmail   string     `json:"account_email"`
+	SwmsData       []SwmsData `json:"swms_data"`
 }
 
 type SwmsData struct {

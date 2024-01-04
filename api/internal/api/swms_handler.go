@@ -484,3 +484,32 @@ func (api *APIHandler) GetAllSWMSByOrgHandler(w http.ResponseWriter, r *http.Req
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(swms)
 }
+
+type UpdateFileRequest struct {
+	ID       int    `json:"id"`
+	FileName string `json:"file_name"`
+	FilePath string `json:"file_path"`
+}
+
+func (api *APIHandler) UpdateFileHandler(w http.ResponseWriter, r *http.Request) {
+
+	var req UpdateFileRequest
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		log.Println("Error decoding request body", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = repository.UpdateFile(api.DB, req.ID, req.FileName, req.FilePath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Respond with the SWMS
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+}

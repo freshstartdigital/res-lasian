@@ -138,8 +138,7 @@ CREATE TABLE swms_data
   swms_id INTEGER REFERENCES swms(id),
   data JSONB,
   version INTEGER NOT NULL,
-  PRIMARY KEY (id),
-  
+  PRIMARY KEY (id)
 );
 
 

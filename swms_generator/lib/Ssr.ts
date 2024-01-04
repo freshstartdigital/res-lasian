@@ -1,11 +1,13 @@
-import { CreateLayoutProps, HomePageLayoutProps } from '@/types/Layout';
+import { CreateLayoutProps, HomePageLayoutProps, SwmsWithPaths } from '@/types/Layout';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { Config } from './config';
 
 import { getServerSession } from 'next-auth';
 import { User } from '@/types/coreSchemaTypes';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-
+import { SWMSTableDataItem, Swms } from '@/types/schema';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 export class Ssr extends Config {
   private context: GetServerSidePropsContext;
 
@@ -67,8 +69,27 @@ export class Ssr extends Config {
       };
     }
 
-    const res2 = await data2.json();
-    console.log('res2', res2);
+    const res2: Swms[] = await data2.json();
+
+    const swms: SwmsWithPaths[] = [];
+
+    const client = new S3Client({
+      region: 'ap-southeast-2'
+    });
+
+    for (const item of res2) {
+      if (!item.file_name) {
+        continue;
+      }
+      const command = new GetObjectCommand({
+        Bucket: 'reslasian',
+        Key: item.file_name
+      });
+
+      const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+
+      swms.push({ ...item, url });
+    }
 
     return {
       props: {
@@ -76,7 +97,7 @@ export class Ssr extends Config {
         softwareProduct: JSON.parse(JSON.stringify(res.softwareProduct)),
         accessGranted: res.accessGranted,
         user: JSON.parse(JSON.stringify(session.user as User)),
-        swms: JSON.parse(JSON.stringify(res2))
+        swms: JSON.parse(JSON.stringify(swms))
       }
     };
   }

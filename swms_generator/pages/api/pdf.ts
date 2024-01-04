@@ -25,10 +25,14 @@ const handler: NextApiHandler = async (req, res) => {
       return;
     }
 
+    const data = await response.json();
+
+    console.log('Go api response', data);
+
     const queue = 'pdf';
 
     try {
-      const msg = JSON.stringify({ data: body.swms_data, pdf: 'swms' });
+      const msg = JSON.stringify({ data: body.swms_data, pdf: 'swms', id: data });
 
       const connection = await amqp.connect('amqp://admin:adminpassword@localhost');
       const channel = await connection.createChannel();

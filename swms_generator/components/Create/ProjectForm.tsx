@@ -95,7 +95,7 @@ const ProjectForm: FC<CreateLayoutProps> = (props) => {
           dateDeveloped: input.dateDeveloped,
           approvedBy: 'Jane Smith',
           approvalDate: input.approvalDate,
-          name: 'this is a test',
+          name: input.siteName,
           email: props.user?.email,
           nextReviewDate: input.nextReviewDate,
           tableData: filteredTableData
