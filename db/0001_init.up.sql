@@ -145,8 +145,14 @@ CREATE TABLE swms_data
   -- Sample Insertions
   INSERT INTO organisations (id, name, address, contact_email) VALUES (1, 'Fresh Start Projects', '123 Fake Street, Sydney, NSW, 2000', 'ryan.slater@droneanalytics.com.au');
   INSERT INTO users (name, email, "emailVerified", image) VALUES ('Ryan Slater', 'ryan.slater@droneanalytics.com.au', NOW(), 'https://gravatar.com/avatar/abc123');
+  INSERT INTO users (name, email, "emailVerified", image) VALUES ('Justin Keating', 'justin.keating@droneanalytics.com.au', NOW(), 'https://gravatar.com/avatar/abc123');
+  INSERT INTO users (name, email, "emailVerified", image) VALUES ('George Frilingos', 'george.frilingos@freshstartprojects.com.au', NOW(), 'https://gravatar.com/avatar/abc123');
   INSERT INTO user_organisations (user_id, organisation_id) VALUES (1, 1);
+  INSERT INTO user_organisations (user_id, organisation_id) VALUES (2, 1);
+  INSERT INTO user_organisations (user_id, organisation_id) VALUES (3, 1);
   INSERT INTO accounts ("userId", type, provider, "providerAccountId", refresh_token, access_token, expires_at, id_token, scope, session_state, token_type) VALUES (1, 'credentials', 'google', '1234567890', '1234567890', '1234567890', 1234567890, '1234567890', '1234567890', '1234567890', '1234567890');
+  INSERT INTO accounts ("userId", type, provider, "providerAccountId", refresh_token, access_token, expires_at, id_token, scope, session_state, token_type) VALUES (2, 'credentials', 'google', '1234567890', '1234567890', '1234567890', 1234567890, '1234567890', '1234567890', '1234567890', '1234567890');
+  INSERT INTO accounts ("userId", type, provider, "providerAccountId", refresh_token, access_token, expires_at, id_token, scope, session_state, token_type) VALUES (3, 'credentials', 'google', '1234567890', '1234567890', '1234567890', 1234567890, '1234567890', '1234567890', '1234567890', '1234567890');
   INSERT INTO software_products (id, name, description, price_monthly, price_annually) VALUES (1, 'SWMS Generator', 'SWMS Generator is a software product that helps you streamline your SWMS generation', 10.00, 100.00);
   INSERT INTO organisation_subscriptions (id, organisation_id, software_product_id, start_date, end_date) VALUES (1, 1, 1, NOW(), NOW() + INTERVAL '1 year');
   INSERT INTO organisation_software_access (organisation_id, software_product_id, access_granted) VALUES (1, 1, TRUE);
