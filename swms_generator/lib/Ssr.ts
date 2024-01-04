@@ -77,18 +77,20 @@ export class Ssr extends Config {
       region: 'ap-southeast-2'
     });
 
-    for (const item of res2) {
-      if (!item.file_name) {
-        continue;
+    if (Array.isArray(res2)) {
+      for (const item of res2) {
+        if (!item.file_name) {
+          continue;
+        }
+        const command = new GetObjectCommand({
+          Bucket: 'reslasian',
+          Key: item.file_name
+        });
+
+        const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+
+        swms.push({ ...item, url });
       }
-      const command = new GetObjectCommand({
-        Bucket: 'reslasian',
-        Key: item.file_name
-      });
-
-      const url = await getSignedUrl(client, command, { expiresIn: 3600 });
-
-      swms.push({ ...item, url });
     }
 
     return {
