@@ -1,4 +1,5 @@
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters';
+import { Config } from './config';
 
 export function mapExpiresAt(account: AdapterAccount): AdapterAccount {
   const expires_at: number = parseInt(account.expires_at as unknown as string);
@@ -9,7 +10,8 @@ export function mapExpiresAt(account: AdapterAccount): AdapterAccount {
 }
 
 export default function MyAdapter(): Adapter {
-  const apiBase = 'http://localhost:8080/auth';
+  const apiUrl = new Config().apiUrl;
+  const apiBase = `${apiUrl}/auth`;
 
   return {
     async createUser(user) {

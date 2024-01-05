@@ -33,8 +33,8 @@ const handler: NextApiHandler = async (req, res) => {
 
     try {
       const msg = JSON.stringify({ data: body.swms_data, pdf: 'swms', id: data });
-
-      const connection = await amqp.connect('amqp://admin:adminpassword@localhost');
+      const config = await new Config().getRabbitURL();
+      const connection = await amqp.connect(config.rabbitMQUrl as string);
       const channel = await connection.createChannel();
       await channel.assertQueue(queue);
       await channel.sendToQueue(queue, Buffer.from(msg));

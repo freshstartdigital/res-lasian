@@ -1,6 +1,18 @@
 # Stage 1: Building the code
 FROM node:18-alpine as builder
 
+# Declare ARG variables
+ARG NEXTAUTH_SECRET
+ARG SENDGRID_API_KEY
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+# Set ARG variables as ENV variables
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV SENDGRID_API_KEY=$SENDGRID_API_KEY
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
 WORKDIR /app
 
 # Set NODE_ENV to production. This helps in optimizing the build
@@ -25,7 +37,7 @@ WORKDIR /app
 
 # Again, set NODE_ENV to production for the runtime environment
 ENV NODE_ENV production
-
+ENV NEXTAUTH_URL http://54.79.40.75
 # Copy the build artifacts from the builder stage
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules

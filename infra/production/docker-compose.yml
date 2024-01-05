@@ -60,6 +60,8 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+    env_file:
+      - ../../.env
     volumes:
       - ./pdf:/app/pdf
     depends_on:

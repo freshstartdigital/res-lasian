@@ -29,8 +29,7 @@ const main = async () => {
         await page.setContent(html);
         const urlSafeName = data.name.replace(/ /g, '_');
 
-        await page.pdf({
-          path: `./pdf/${urlSafeName}.pdf`,
+        const pdfStream = await page.pdf({
           format: 'A4',
           printBackground: true,
           scale: 1.0,
@@ -40,11 +39,11 @@ const main = async () => {
         });
 
         const s3Client = new S3Client({ region: 'ap-southeast-2' });
-        const fileContent = fs.readFileSync(`./pdf/${urlSafeName}.pdf`);
+
         const uploadParams = {
           Bucket: 'reslasian',
           Key: `${urlSafeName}.pdf`,
-          Body: fileContent
+          Body: pdfStream
         };
         const uploadCommand = new PutObjectCommand(uploadParams);
         const uploadResponse = await s3Client.send(uploadCommand);
@@ -60,12 +59,6 @@ const main = async () => {
             file_path: ``
           })
         });
-
-        // await axios.post('http://api:8080/swms/file', {
-        //   id: id,
-        //   file_name: `${data.name}.pdf`,
-        //   file_path: `https://fsd-bucket.s3-ap-southeast-2.amazonaws.com/${data.name}.pdf`
-        // });
       } catch (error) {
         console.log('hitting error', error);
       } finally {

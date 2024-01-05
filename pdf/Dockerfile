@@ -1,6 +1,14 @@
 # Use the official Node.js 16 image as a parent image
 FROM node:16-bullseye-slim
 
+
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
 # Set the working directory
 WORKDIR /app
 
