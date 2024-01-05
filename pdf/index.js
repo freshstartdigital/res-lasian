@@ -70,6 +70,10 @@ const main = async () => {
   );
 };
 
-main().catch((error) => {
-  console.error('error initialising', error);
-});
+main()
+  .then(() => {
+    console.log('pdf worker started');
+  })
+  .catch((error) => {
+    console.error('error initialising', error);
+  });
