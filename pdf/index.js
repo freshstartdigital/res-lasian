@@ -6,7 +6,27 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import fetch from 'node-fetch';
 
 const main = async () => {
-  const connection = await amqp.connect('amqp://admin:adminpassword@res_rabbitmq_container');
+  let connection;
+  let connected = false;
+  const maxRetries = 5;
+  const retryInterval = 5000; // Retry every 5 seconds
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      connection = await amqp.connect('amqp://admin:adminpassword@res_rabbitmq_container');
+      connected = true;
+      console.log('Connected to RabbitMQ');
+      break;
+    } catch (error) {
+      console.error(`Attempt ${i + 1} failed, retrying in ${retryInterval / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, retryInterval));
+    }
+  }
+
+  if (!connected) {
+    throw new Error('Failed to connect to RabbitMQ after several attempts');
+  }
+
   const channel = await connection.createChannel();
   await channel.assertQueue('pdf');
   await channel.prefetch(1);
