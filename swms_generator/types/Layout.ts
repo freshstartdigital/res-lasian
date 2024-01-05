@@ -1,7 +1,7 @@
 import { Organisation, SoftwareProduct, User } from './coreSchemaTypes';
 import { SWMSTableDataItem, Swms } from './schema';
 
-export type SwmsWithPaths = Swms & { url: string };
+export type SwmsWithPaths = Swms & { url?: string };
 
 export type HomePageLayoutProps = {
   organisation?: Organisation | null;

@@ -80,6 +80,7 @@ export class Ssr extends Config {
     if (Array.isArray(res2)) {
       for (const item of res2) {
         if (!item.file_name) {
+          swms.push(item);
           continue;
         }
         const command = new GetObjectCommand({

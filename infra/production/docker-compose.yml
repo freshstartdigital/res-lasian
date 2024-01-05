@@ -30,6 +30,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    depends_on:
+      - rabbitmq
 
   pgadmin:
     image: dpage/pgadmin4
@@ -62,8 +64,6 @@ services:
       - NODE_ENV=production
     env_file:
       - ../../.env
-    volumes:
-      - ./pdf:/app/pdf
     depends_on:
       - rabbitmq
 
@@ -77,5 +77,4 @@ services:
 volumes:
   postgres_data:
   rabbitmq_data:
-  pdf: # This volume is used to persist generated PDFs on the host
 
