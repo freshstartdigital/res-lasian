@@ -16,7 +16,7 @@ const SwmsTable: FC<SwmsTableProps> = ({ swms }) => {
 
     if (unloadedSwms.length > 0) {
       const timer = setTimeout(() => {
-        console.log('refreshing');
+        console.log('refreshing page');
         router.push(router.asPath);
       }, 5000);
       return () => clearTimeout(timer);
