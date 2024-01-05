@@ -37,7 +37,7 @@ WORKDIR /app
 
 # Again, set NODE_ENV to production for the runtime environment
 ENV NODE_ENV production
-ENV NEXTAUTH_URL http://54.79.40.75
+ENV NEXTAUTH_URL http://13.236.165.201
 # Copy the build artifacts from the builder stage
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
