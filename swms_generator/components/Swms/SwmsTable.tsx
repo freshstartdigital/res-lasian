@@ -18,7 +18,7 @@ const SwmsTable: FC<SwmsTableProps> = ({ swms }) => {
       const timer = setTimeout(() => {
         console.log('refreshing');
         router.push(router.asPath);
-      }, 3000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, []);
