@@ -28,6 +28,6 @@ jobs:
           cd infra/production
           docker-compose down
           docker-compose build
-          docker-compose restart pdfgenerator
           docker-compose up -d
+          docker-compose restart pdfgenerator
         EOF
